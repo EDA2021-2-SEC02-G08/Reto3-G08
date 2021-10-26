@@ -63,3 +63,6 @@ def loadData(analyzer, ufosfile):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+
+def rankCity(analyzer):
+    return model.rankCity(analyzer)

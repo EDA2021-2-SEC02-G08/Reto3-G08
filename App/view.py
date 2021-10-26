@@ -22,6 +22,9 @@
 
 
 import config as cf
+# from DISClib.ADT import orderedmap as om
+from DISClib.ADT import map as mp
+from DISClib.ADT import list as lt
 import sys
 import controller
 assert cf
@@ -60,14 +63,19 @@ Menu principal
 
 while True:
     printMenu()
-    inputs = input('Seleccione una opción para continuar\n')
-    if int(inputs[0]) == 1:
+    inputs = int(input('Seleccione una opción para continuar\n'))
+    if inputs == 1:
         print("\nInicializando....")
-        controlador = controller.init()
+        analyzer = controller.init()
 
-    elif int(inputs[0]) == 2:
+    elif inputs == 2:
         print("Cargando información de los archivos ....")
-        controller.loadData(controlador, ufosfile)
+        controller.loadData(analyzer, ufosfile)
+        print(mp.get(analyzer['cityIndex'], 'las vegas'))
+
+    elif inputs == 3:
+        rank = controller.rankCity(analyzer)
+        print(lt.firstElement(rank))
 
     else:
         sys.exit(0)
