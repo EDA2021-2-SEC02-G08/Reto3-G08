@@ -27,24 +27,51 @@
 
 import config as cf
 from DISClib.ADT import list as lt
-from DISClib.ADT import map as mp
-from DISClib.DataStructures import mapentry as me
-from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.ADT import orderedmap as om
 assert cf
 
-"""
-Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
-los mismos.
-"""
 
 # Construccion de modelos
 
+
+def newAnalyzer():
+    """
+    Inicializa el analizador.
+    Retorna el analizador inicializado.
+    """
+    analyzer = {'ufos': None,
+                'dateIndex': None}
+
+    analyzer['ufos'] = lt.newList('SINGLE_LINKED')
+
+    # -----------------------------------------------------
+    # Se crean indices (Maps) por los siguientes criterios:
+    # -----------------------------------------------------
+
+    analyzer['dateIndex'] = om.newMap(omaptype='RBT',
+                                      comparefunction=compare)
+
+    return analyzer
+
+
 # Funciones para agregar informacion al catalogo
+
+
+def addUFO(analyzer, ufo):
+    lt.addLast(analyzer['ufos'], ufo)
+
+    return analyzer
+
 
 # Funciones para creacion de datos
 
 # Funciones de consulta
 
-# Funciones utilizadas para comparar elementos dentro de una lista
+# Funciones de comparación
+
+
+def compare():
+    pass
+
 
 # Funciones de ordenamiento

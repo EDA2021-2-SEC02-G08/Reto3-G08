@@ -20,10 +20,10 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+
 import config as cf
 import sys
 import controller
-from DISClib.ADT import list as lt
 assert cf
 
 
@@ -34,25 +34,42 @@ se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
 
+
+ufosfile = 'UFOS//UFOS-utf8-small.csv'
+controlador = None
+
+
 def printMenu():
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("1- Inicializar Analizador")
+    print("2- Cargar información en el catálogo")
+    print("3- Contar los avistamientos en una ciudad")
+    print("4- Contar los avistamientos por duración")
+    print("5- Contar avistamientos por hora / minutos del día")
+    print("6- Contar los avistamientos en un rango de fechas")
+    print("7- Contar los avistamientos de una zona geográfica")
+
 
 catalog = None
+
 
 """
 Menu principal
 """
+
+
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
-        print("Cargando información de los archivos ....")
+        print("\nInicializando....")
+        controlador = controller.init()
 
     elif int(inputs[0]) == 2:
-        pass
+        print("Cargando información de los archivos ....")
+        controller.loadData(controlador, ufosfile)
 
     else:
         sys.exit(0)
+
 sys.exit(0)
