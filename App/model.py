@@ -97,7 +97,8 @@ def addCity(analyzer, ufo):
 # Funciones de consulta
 
 
-def rankCity(analyzer):
+def rankingCity(analyzer):
+
     cityIndex = analyzer['cityIndex']
     cities = mp.valueSet(cityIndex)
     sortCity(cities)

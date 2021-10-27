@@ -23,7 +23,7 @@
 
 import config as cf
 # from DISClib.ADT import orderedmap as om
-from DISClib.ADT import map as mp
+# from DISClib.ADT import map as mp
 from DISClib.ADT import list as lt
 import sys
 import controller
@@ -36,6 +36,20 @@ Presenta el menu de opciones y por cada seleccion
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
+
+# Funciones de impresión
+
+
+def rankingCity(ranking):
+    size = lt.size(ranking)
+    print('Hay un total de ' + str(size) +
+          ' diferentes ciudades con avistamientos UFO\n')
+    print('El TOP 5 de ciudades con más avistamientos UFO son:')
+    i = 1
+    while i <= 5:
+        data = lt.getElement(ranking, i)
+        print(data['ufos']['elements'][0]['city'] + ' - ' + str(data['count']))
+        i += 1
 
 
 ufosfile = 'UFOS//UFOS-utf8-small.csv'
@@ -71,11 +85,11 @@ while True:
     elif inputs == 2:
         print("Cargando información de los archivos ....")
         controller.loadData(analyzer, ufosfile)
-        print(mp.get(analyzer['cityIndex'], 'las vegas'))
 
     elif inputs == 3:
-        rank = controller.rankCity(analyzer)
-        print(lt.firstElement(rank))
+        ranking = controller.rankingCity(analyzer)
+        rankingCity(ranking)
+        # print(lt.getElement(ranking, 1))
 
     else:
         sys.exit(0)
