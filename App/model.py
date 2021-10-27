@@ -112,7 +112,7 @@ def cmpCity(city1, city2):
     return city1['count'] > city2['count']
 
 
-def cmpDate(date1, date2):
+def cmpDate(city1, city2):
     pass
 
 
