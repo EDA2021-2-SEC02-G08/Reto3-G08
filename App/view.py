@@ -23,7 +23,8 @@
 
 import config as cf
 # from DISClib.ADT import orderedmap as om
-# from DISClib.ADT import map as mp
+from DISClib.ADT import map as mp
+from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
 import sys
 import controller
@@ -40,16 +41,24 @@ operación solicitada
 # Funciones de impresión
 
 
-def rankingCity(ranking):
+def rankingCity(analyzer, ranking, city):
     size = lt.size(ranking)
+    cityIndex = analyzer['cityIndex']
+    pair = mp.get(cityIndex, city)
+    value = me.getValue(pair)
     print('Hay un total de ' + str(size) +
           ' diferentes ciudades con avistamientos UFO\n')
     print('El TOP 5 de ciudades con más avistamientos UFO son:')
+
     i = 1
     while i <= 5:
         data = lt.getElement(ranking, i)
         print(data['ufos']['elements'][0]['city'] + ' - ' + str(data['count']))
         i += 1
+
+    print('\nHay un total de ' + str(lt.size(value['ufos'])) + ' en: ' +
+          str(city))
+    print('Los primeros tres y últimos tres en esta ciudad son: ')
 
 
 ufosfile = 'UFOS//UFOS-utf8-small.csv'
@@ -87,9 +96,9 @@ while True:
         controller.loadData(analyzer, ufosfile)
 
     elif inputs == 3:
+        city = str(input('Ingrese la ciudad: '))
         ranking = controller.rankingCity(analyzer)
-        rankingCity(ranking)
-        # print(lt.getElement(ranking, 1))
+        rankingCity(analyzer, ranking, city)
 
     else:
         sys.exit(0)

@@ -98,7 +98,6 @@ def addCity(analyzer, ufo):
 
 
 def rankingCity(analyzer):
-
     cityIndex = analyzer['cityIndex']
     cities = mp.valueSet(cityIndex)
     sortCity(cities)
@@ -113,8 +112,16 @@ def cmpCity(city1, city2):
     return city1['count'] > city2['count']
 
 
+def cmpDate(date1, date2):
+    pass
+
+
 # Funciones de ordenamiento
 
 
 def sortCity(list):
     mg.sort(list, cmpCity)
+
+
+def sortDate(list):
+    mg.sort(list, cmpDate)
