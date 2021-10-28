@@ -23,8 +23,8 @@
 
 import config as cf
 # from DISClib.ADT import orderedmap as om
-from DISClib.ADT import map as mp
-from DISClib.DataStructures import mapentry as me
+# from DISClib.ADT import map as mp
+# from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
 import sys
 import controller
@@ -41,33 +41,34 @@ operación solicitada
 # Funciones de impresión
 
 
-def printUFOInfo (ufo):
-    print ('Fecha y hora: ' + ufo['datetime'] + ' Ciudad: ' + ufo['city'] 
-            + ' País: ' + ufo['country'] + ' Duración (segundos): ' 
-            + ufo['duration (seconds)'] + ' Forma del objeto: ' + ufo['shape'])
+def printUFOInfo(ufo):
+    print('Fecha y hora: ' + ufo['datetime'] + ' Ciudad: ' + ufo['city'] +
+          ' País: ' + ufo['country'] + ' Duración (segundos): ' +
+          ufo['duration (seconds)'] + ' Forma del objeto: ' + ufo['shape'])
+
 
 def printCitySightings(city, result):
     if result[0]:
-        print('\nHay ' + str(result[1]) 
-               + ' ciudades donde se han reportado avistamientos.' )
-        print('Se han reportado ' + str(result[2]) + ' avistamientos en '
-               + city + '.')
-        if result[2]<6:
+        print('\nHay ' + str(result[1]) +
+              ' ciudades donde se han reportado avistamientos.')
+        print('Se han reportado ' + str(result[2]) + ' avistamientos en ' +
+              city + '.')
+        if result[2] < 6:
             print('\nLos avistamientos reportados en la ciudad son:')
             for ufo in lt.iterator(result[3]):
                 printUFOInfo(ufo)
         else:
-            print('Los primeros tres y últimos tres avistamientos en la ciudad son: ')
-            first = lt.subList(result[3],1,3)
-            last = lt.subList(result[3],result[2]-3,3)
+            print('Los primeros y últimos tres avistamientos son: ')
+            first = lt.subList(result[3], 1, 3)
+            last = lt.subList(result[3], result[2] - 3, 3)
             for ufo in lt.iterator(first):
                 printUFOInfo(ufo)
             for ufo in lt.iterator(last):
                 printUFOInfo(ufo)
     else:
-        print('\nHay ' + str(result[1]) 
-               + ' ciudades donde se han reportado avistamientos.' )
-        print('La ciudad ' + city + ' no reporta avistamientos.' )
+        print('\nHay ' + str(result[1]) +
+              ' ciudades donde se han reportado avistamientos.')
+        print('La ciudad ' + city + ' no reporta avistamientos.')
 
 
 ufosfile = 'UFOS//UFOS-utf8-small.csv'
@@ -76,7 +77,7 @@ controlador = None
 
 def printMenu():
     print("Bienvenido")
-    print("1- Inicializar Analizador")
+    print("1- Inicializar analizador")
     print("2- Cargar información de avistamientos")
     print("3- Consultar los avistamientos en una ciudad")
     print("4- Consultar los avistamientos por duración")
