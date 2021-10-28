@@ -23,7 +23,7 @@
 
 import config as cf
 # from DISClib.ADT import orderedmap as om
-# from DISClib.ADT import map as mp
+from DISClib.ADT import map as mp
 # from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
 import sys
@@ -106,9 +106,10 @@ while True:
         controller.loadData(analyzer, ufosfile)
 
     elif inputs == 3:
-        city = str(input('Ingrese la ciudad: '))
-        result = controller.getCitySightings(analyzer, city)
-        printCitySightings(city, result)
+        # city = str(input('Ingrese la ciudad: '))
+        # result = controller.getCitySightings(analyzer, city)
+        # printCitySightings(city, result)
+        print(mp.get(analyzer['cityIndex'], 'las vegas'))
 
     else:
         sys.exit(0)

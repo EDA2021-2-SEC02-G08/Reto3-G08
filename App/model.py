@@ -75,8 +75,7 @@ def addUFO(analyzer, ufo):
 def addCity(analyzer, ufo):
     """
     Esta función crea la siguiente estructura de datos por ciudad:
-    {key: 'city', value:{'count': count, 'ufos': [ufos], 'DateTime': BTS}}
-    'DateTime' = {key: date, value: [ufos]}
+    {key: 'city', value:{'count': count, 'DateTime': BTS}}
     """
     city = ufo['city']
     date = ufo['datetime']
@@ -87,7 +86,7 @@ def addCity(analyzer, ufo):
         pass
     else:
         dateTime = om.newMap(omaptype='RBT',
-                             comparefunction=compareDates)
+                             comparefunction=cmpDate)
         count = 0
         data = {'count': count, 'DateTime': dateTime}
         mp.put(cityIndex, city, data)
@@ -99,16 +98,19 @@ def addCity(analyzer, ufo):
     pair = om.get(value['DateTime'], date)
     arrayList = me.valueSet(pair)
 
+    size = 0
+    for element in lt.iterator(arrayList):
+        size += lt.size(element)
 
-    value['count'] = lt.size(arrayList)
+    value['count'] = size
 
 
 def addDateTime(map, UFO):
     """
-    {fecha: dateTime, value: [ufos]}
+    {key: date, value: [ufos]}
     """
-    datetime = UFO['datetime']
-    DateTime = datetime.fromisoformat(datetime)
+    date_time = UFO['datetime']
+    DateTime = datetime.fromisoformat(date_time)
     entry = om.get(map, DateTime)
     if entry is None:
         sightings = lt.newList('SINGLE_LINKED')
@@ -154,9 +156,9 @@ def compareDates(date1, date2):
         return -1
 
 
-def cmpDate(ufo1, ufo2):
-    D1 = datetime.fromisoformat(ufo1['datetime'])
-    D2 = datetime.fromisoformat(ufo2['datetime'])
+def cmpDate(datetime1, datetime2):
+    D1 = datetime.fromisoformat(datetime1)
+    D2 = datetime.fromisoformat(datetime2)
     return D1 < D2
 
 
