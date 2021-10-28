@@ -75,27 +75,38 @@ def addUFO(analyzer, ufo):
 def addCity(analyzer, ufo):
     """
     Esta función crea la siguiente estructura de datos por ciudad:
-    {key: 'city', value:{'count': count, 'ufos': [ufos]}}
+    {key: 'city', value:{'count': count, 'ufos': [ufos], 'DateTime': BTS}}
+    'DateTime' = {key: date, value: [ufos]}
     """
     city = ufo['city']
+    date = ufo['datetime']
     cityIndex = analyzer['cityIndex']
     city_exists = mp.contains(cityIndex, city)
 
     if city_exists:
         pass
     else:
-        arrayList = lt.newList('ARRAY_LIST')
+        dateTime = om.newMap(omaptype='RBT',
+                             comparefunction=compareDates)
         count = 0
-        data = {'count': count, 'ufos': arrayList}
+        data = {'count': count, 'DateTime': dateTime}
         mp.put(cityIndex, city, data)
 
     pair = mp.get(cityIndex, city)
     value = me.getValue(pair)
-    lt.addLast(value['ufos'], ufo)
-    value['count'] = lt.size(value['ufos'])
+    addDateTime(value['DateTime'], ufo)
+
+    pair = om.get(value['DateTime'], date)
+    arrayList = me.valueSet(pair)
+
+
+    value['count'] = lt.size(arrayList)
 
 
 def addDateTime(map, UFO):
+    """
+    {fecha: dateTime, value: [ufos]}
+    """
     datetime = UFO['datetime']
     DateTime = datetime.fromisoformat(datetime)
     entry = om.get(map, DateTime)
@@ -107,10 +118,10 @@ def addDateTime(map, UFO):
     else:
         dateentry = me.getValue(entry)
     lt.addLast(dateentry, UFO)
-    
 
 
 # Funciones de consulta
+
 
 def getCitySightings(analyzer, city):
     cityIndex = analyzer['cityIndex']
