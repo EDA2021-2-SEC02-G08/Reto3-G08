@@ -29,8 +29,9 @@ import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
-# from DISClib.ADT import orderedmap as om
+from DISClib.ADT import orderedmap as om
 from DISClib.Algorithms.Sorting import mergesort as mg
+from datetime import datetime
 assert cf
 
 
@@ -94,15 +95,33 @@ def addCity(analyzer, ufo):
     value['count'] = lt.size(value['ufos'])
 
 
+def addDateTime(map, UFO):
+    datetime = UFO['datetime']
+    DateTime = datetime.fromisoformat(datetime)
+    entry = om.get(map, DateTime)
+    if entry is None:
+        sightings = lt.newList('SINGLE_LINKED')
+        om.put(map, DateTime, sightings)
+        entry = om.get(map, DateTime)
+        dateentry = me.getValue(entry)
+    else:
+        dateentry = me.getValue(entry)
+    lt.addLast(dateentry, UFO)
+    
+
+
 # Funciones de consulta
 
-
-def rankingCity(analyzer):
+def getCitySightings(analyzer, city):
     cityIndex = analyzer['cityIndex']
-    cities = mp.valueSet(cityIndex)
-    sortCity(cities)
-
-    return cities
+    N_cities = lt.size(mp.keySet(cityIndex))
+    pair = mp.get(cityIndex, city)
+    if pair is not None:
+        data = me.getValue(pair)
+        sortDate(data['ufos'])
+        return True, N_cities, data['count'], data['ufos']
+    else:
+        return False, N_cities
 
 
 # Funciones de comparación
@@ -112,8 +131,22 @@ def cmpCity(city1, city2):
     return city1['count'] > city2['count']
 
 
-def cmpDate(city1, city2):
-    pass
+def compareDates(date1, date2):
+    """
+    Compara dos fechas
+    """
+    if (date1 == date2):
+        return 0
+    elif (date1 > date2):
+        return 1
+    else:
+        return -1
+
+
+def cmpDate(ufo1, ufo2):
+    D1 = datetime.fromisoformat(ufo1['datetime'])
+    D2 = datetime.fromisoformat(ufo2['datetime'])
+    return D1 < D2
 
 
 # Funciones de ordenamiento

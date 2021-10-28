@@ -41,24 +41,33 @@ operación solicitada
 # Funciones de impresión
 
 
-def rankingCity(analyzer, ranking, city):
-    size = lt.size(ranking)
-    cityIndex = analyzer['cityIndex']
-    pair = mp.get(cityIndex, city)
-    value = me.getValue(pair)
-    print('Hay un total de ' + str(size) +
-          ' diferentes ciudades con avistamientos UFO\n')
-    print('El TOP 5 de ciudades con más avistamientos UFO son:')
+def printUFOInfo (ufo):
+    print ('Fecha y hora: ' + ufo['datetime'] + ' Ciudad: ' + ufo['city'] 
+            + ' País: ' + ufo['country'] + ' Duración (segundos): ' 
+            + ufo['duration (seconds)'] + ' Forma del objeto: ' + ufo['shape'])
 
-    i = 1
-    while i <= 5:
-        data = lt.getElement(ranking, i)
-        print(data['ufos']['elements'][0]['city'] + ' - ' + str(data['count']))
-        i += 1
-
-    print('\nHay un total de ' + str(lt.size(value['ufos'])) + ' en: ' +
-          str(city))
-    print('Los primeros tres y últimos tres en esta ciudad son: ')
+def printCitySightings(city, result):
+    if result[0]:
+        print('\nHay ' + str(result[1]) 
+               + ' ciudades donde se han reportado avistamientos.' )
+        print('Se han reportado ' + str(result[2]) + ' avistamientos en '
+               + city + '.')
+        if result[2]<6:
+            print('\nLos avistamientos reportados en la ciudad son:')
+            for ufo in lt.iterator(result[3]):
+                printUFOInfo(ufo)
+        else:
+            print('Los primeros tres y últimos tres avistamientos en la ciudad son: ')
+            first = lt.subList(result[3],1,3)
+            last = lt.subList(result[3],result[2]-3,3)
+            for ufo in lt.iterator(first):
+                printUFOInfo(ufo)
+            for ufo in lt.iterator(last):
+                printUFOInfo(ufo)
+    else:
+        print('\nHay ' + str(result[1]) 
+               + ' ciudades donde se han reportado avistamientos.' )
+        print('La ciudad ' + city + ' no reporta avistamientos.' )
 
 
 ufosfile = 'UFOS//UFOS-utf8-small.csv'
@@ -68,12 +77,12 @@ controlador = None
 def printMenu():
     print("Bienvenido")
     print("1- Inicializar Analizador")
-    print("2- Cargar información en el catálogo")
-    print("3- Contar los avistamientos en una ciudad")
-    print("4- Contar los avistamientos por duración")
-    print("5- Contar avistamientos por hora / minutos del día")
-    print("6- Contar los avistamientos en un rango de fechas")
-    print("7- Contar los avistamientos de una zona geográfica")
+    print("2- Cargar información de avistamientos")
+    print("3- Consultar los avistamientos en una ciudad")
+    print("4- Consultar los avistamientos por duración")
+    print("5- Consultar avistamientos por hora / minutos del día")
+    print("6- Consultar los avistamientos en un rango de fechas")
+    print("7- Consultar los avistamientos de una zona geográfica")
 
 
 catalog = None
@@ -97,8 +106,8 @@ while True:
 
     elif inputs == 3:
         city = str(input('Ingrese la ciudad: '))
-        ranking = controller.rankingCity(analyzer)
-        rankingCity(analyzer, ranking, city)
+        result = controller.getCitySightings(analyzer, city)
+        printCitySightings(city, result)
 
     else:
         sys.exit(0)
