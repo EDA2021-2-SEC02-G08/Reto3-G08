@@ -22,9 +22,9 @@
 
 
 import config as cf
-# from DISClib.ADT import orderedmap as om
+from DISClib.ADT import orderedmap as om
 from DISClib.ADT import map as mp
-# from DISClib.DataStructures import mapentry as me
+from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
 import sys
 import controller
@@ -38,37 +38,36 @@ se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
 
+
 # Funciones de impresión
 
 
-def printUFOInfo(ufo):
-    print('Fecha y hora: ' + ufo['datetime'] + ' Ciudad: ' + ufo['city'] +
-          ' País: ' + ufo['country'] + ' Duración (segundos): ' +
-          ufo['duration (seconds)'] + ' Forma del objeto: ' + ufo['shape'])
+def printUFO(ufo):
+    print('Fecha y hora: ' + ufo['datetime'] +
+          ' Ciudad: ' + ufo['city'] +
+          ' País: ' + ufo['country'] +
+          ' Duración (segundos): ' + ufo['duration (seconds)'] +
+          ' Forma del objeto: ' + ufo['shape'])
 
 
-def printCitySightings(city, result):
-    if result[0]:
-        print('\nHay ' + str(result[1]) +
-              ' ciudades donde se han reportado avistamientos.')
-        print('Se han reportado ' + str(result[2]) + ' avistamientos en ' +
-              city + '.')
-        if result[2] < 6:
-            print('\nLos avistamientos reportados en la ciudad son:')
-            for ufo in lt.iterator(result[3]):
-                printUFOInfo(ufo)
-        else:
-            print('Los primeros y últimos tres avistamientos son: ')
-            first = lt.subList(result[3], 1, 3)
-            last = lt.subList(result[3], result[2] - 3, 3)
-            for ufo in lt.iterator(first):
-                printUFOInfo(ufo)
-            for ufo in lt.iterator(last):
-                printUFOInfo(ufo)
-    else:
-        print('\nHay ' + str(result[1]) +
-              ' ciudades donde se han reportado avistamientos.')
-        print('La ciudad ' + city + ' no reporta avistamientos.')
+def printCitySightings(analyzer, city):
+    """
+    Esta función imprime el requerimiento 1.
+    """
+    # ----------------------------------------------------------------------
+    cityIndex = analyzer['cityIndex']
+    total = lt.size(mp.keySet(cityIndex))
+    print('\nHay ' + str(total) +
+          ' ciudades donde se han reportado avistamientos.')
+    # ----------------------------------------------------------------------
+    entry = mp.get(cityIndex, city)
+    value = me.getValue(entry)
+    print('Se han reportado ' + str(value['count']) + ' avistamientos en ' +
+          city + '.')
+    # ----------------------------------------------------------------------
+    print('\nLos primero y ultimos tres avistamientos en esta ciudad son: ')
+    print(om.minKey(value['DateTime']))
+    print(om.maxKey(value['DateTime']))
 
 
 ufosfile = 'UFOS//UFOS-utf8-small.csv'
@@ -106,10 +105,8 @@ while True:
         controller.loadData(analyzer, ufosfile)
 
     elif inputs == 3:
-        # city = str(input('Ingrese la ciudad: '))
-        # result = controller.getCitySightings(analyzer, city)
-        # printCitySightings(city, result)
-        print(mp.get(analyzer['cityIndex'], 'phoenix'))
+        city = str(input('Ingrese la ciudad: '))
+        printCitySightings(analyzer, city)
 
     else:
         sys.exit(0)
