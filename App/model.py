@@ -77,7 +77,6 @@ def addCity(analyzer, ufo):
     {key: 'city', value:{'count': count, 'DateTime': RBT}}
     """
     city = ufo['city']
-    # date = ufo['datetime']
     cityIndex = analyzer['cityIndex']
     ispresent = mp.contains(cityIndex, city)
 
@@ -127,7 +126,6 @@ def cmpDates(datetime1, datetime2):
     """
     Esta función compara dos fechas.
     """
-
     if datetime1 == datetime2:
         return 0
     elif datetime1 > datetime2:
