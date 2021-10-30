@@ -31,7 +31,7 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import orderedmap as om
 from DISClib.Algorithms.Sorting import mergesort as mg
-from datetime import datetime
+import datetime
 assert cf
 
 
@@ -86,7 +86,7 @@ def addCity(analyzer, ufo):
         pass
     else:
         dateTime = om.newMap(omaptype='RBT',
-                             comparefunction=cmpDate)
+                             comparefunction=cmpDates)
         count = 0
         data = {'count': count, 'DateTime': dateTime}
         mp.put(cityIndex, city, data)
@@ -125,6 +125,7 @@ def addDateTime(map, UFO):
 # Funciones de consulta
 
 
+"""
 def getCitySightings(analyzer, city):
     cityIndex = analyzer['cityIndex']
     N_cities = lt.size(mp.keySet(cityIndex))
@@ -135,6 +136,7 @@ def getCitySightings(analyzer, city):
         return True, N_cities, data['count'], data['ufos']
     else:
         return False, N_cities
+"""
 
 
 # Funciones de comparación
@@ -144,22 +146,22 @@ def cmpCity(city1, city2):
     return city1['count'] > city2['count']
 
 
-def compareDates(date1, date2):
+def cmpDates(datetime1, datetime2):
     """
     Compara dos fechas
     """
+    date1 = datetime1['datetime']
+    date2 = datetime2['datetime']
+
+    date1 = datetime.datetime.strptime(date1, '%Y-%m-%d %H:%M:%S')
+    date2 = datetime.datetime.strptime(date2, '%Y-%m-%d %H:%M:%S')
+
     if (date1 == date2):
         return 0
     elif (date1 > date2):
         return 1
     else:
         return -1
-
-
-def cmpDate(datetime1, datetime2):
-    D1 = datetime.fromisoformat(datetime1)
-    D2 = datetime.fromisoformat(datetime2)
-    return D1 < D2
 
 
 # Funciones de ordenamiento
@@ -169,5 +171,7 @@ def sortCity(list):
     mg.sort(list, cmpCity)
 
 
+"""
 def sortDate(list):
     mg.sort(list, cmpDate)
+"""
