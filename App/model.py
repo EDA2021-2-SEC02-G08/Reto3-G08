@@ -112,6 +112,7 @@ def addDateTime(map, ufo):
     {key: datetime, value: [ufos]}
     """
     dateTime = ufo['datetime']
+    dateTime = datetime.fromisoformat(dateTime)
     ispresent = om.contains(map, dateTime)
 
     if ispresent:
@@ -131,15 +132,10 @@ def addDateTime(map, ufo):
 # Funciones de comparación
 
 
-def cmpDates(ufo1, ufo2):
+def cmpDates(datetime1, datetime2):
     """
     Esta función compara dos fechas.
     """
-    date1 = ufo1['datetime']
-    date2 = ufo2['datetime']
-
-    datetime1 = datetime.fromisoformat(date1)
-    datetime2 = datetime.fromisoformat(date2)
 
     if datetime1 == datetime2:
         return 0
