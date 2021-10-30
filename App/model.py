@@ -30,8 +30,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import orderedmap as om
-from DISClib.Algorithms.Sorting import mergesort as mg
-import datetime
+from datetime import datetime
 assert cf
 
 
@@ -46,7 +45,7 @@ def newAnalyzer():
     analyzer = {'ufos': None,
                 'cityIndex': None}
 
-    analyzer['ufos'] = lt.newList('SINGLE_LINKED')
+    analyzer['ufos'] = lt.newList('ARRAY_LIST')
 
     # -----------------------------------------------------
     # Se crean indices (Maps) por los siguientes criterios:
@@ -75,14 +74,14 @@ def addUFO(analyzer, ufo):
 def addCity(analyzer, ufo):
     """
     Esta función crea la siguiente estructura de datos por ciudad:
-    {key: 'city', value:{'count': count, 'DateTime': BTS}}
+    {key: 'city', value:{'count': count, 'DateTime': RBT}}
     """
     city = ufo['city']
-    date = ufo['datetime']
+    # date = ufo['datetime']
     cityIndex = analyzer['cityIndex']
-    city_exists = mp.contains(cityIndex, city)
+    ispresent = mp.contains(cityIndex, city)
 
-    if city_exists:
+    if ispresent:
         pass
     else:
         dateTime = om.newMap(omaptype='RBT',
@@ -91,10 +90,11 @@ def addCity(analyzer, ufo):
         data = {'count': count, 'DateTime': dateTime}
         mp.put(cityIndex, city, data)
 
-    pair = mp.get(cityIndex, city)
-    value = me.getValue(pair)
+    entry = mp.get(cityIndex, city)
+    value = me.getValue(entry)
     addDateTime(value['DateTime'], ufo)
 
+    """
     pair = om.get(value['DateTime'], date)
     arrayList = me.valueSet(pair)
 
@@ -103,75 +103,65 @@ def addCity(analyzer, ufo):
         size += lt.size(element)
 
     value['count'] = size
+    """
 
 
-def addDateTime(map, UFO):
+def addDateTime(map, ufo):
     """
-    {key: date, value: [ufos]}
+    Esta función crea la siguiente estructura de datos Map Ordered:
+    {key: datetime, value: [ufos]}
     """
-    date_time = UFO['datetime']
-    DateTime = datetime.fromisoformat(date_time)
-    entry = om.get(map, DateTime)
-    if entry is None:
-        sightings = lt.newList('SINGLE_LINKED')
-        om.put(map, DateTime, sightings)
-        entry = om.get(map, DateTime)
-        dateentry = me.getValue(entry)
+    dateTime = ufo['datetime']
+    ispresent = om.contains(map, dateTime)
+
+    if ispresent:
+        pass
     else:
-        dateentry = me.getValue(entry)
-    lt.addLast(dateentry, UFO)
+        sightings = lt.newList('ARRAY_LIST')
+        om.put(map, dateTime, sightings)
+
+    entry = om.get(map, dateTime)
+    arrayList = me.getValue(entry)
+    lt.addLast(arrayList, ufo)
 
 
 # Funciones de consulta
 
 
-"""
-def getCitySightings(analyzer, city):
-    cityIndex = analyzer['cityIndex']
-    N_cities = lt.size(mp.keySet(cityIndex))
-    pair = mp.get(cityIndex, city)
-    if pair is not None:
-        data = me.getValue(pair)
-        sortDate(data['ufos'])
-        return True, N_cities, data['count'], data['ufos']
-    else:
-        return False, N_cities
-"""
-
-
 # Funciones de comparación
 
 
-def cmpCity(city1, city2):
-    return city1['count'] > city2['count']
-
-
-def cmpDates(datetime1, datetime2):
+def cmpDates(ufo1, ufo2):
     """
-    Compara dos fechas
+    Esta función compara dos fechas.
     """
-    date1 = datetime1['datetime']
-    date2 = datetime2['datetime']
+    date1 = ufo1['datetime']
+    date2 = ufo2['datetime']
 
-    date1 = datetime.datetime.strptime(date1, '%Y-%m-%d %H:%M:%S')
-    date2 = datetime.datetime.strptime(date2, '%Y-%m-%d %H:%M:%S')
+    datetime1 = datetime.fromisoformat(date1)
+    datetime2 = datetime.fromisoformat(date2)
 
-    if (date1 == date2):
+    if datetime1 == datetime2:
         return 0
-    elif (date1 > date2):
+    elif datetime1 > datetime2:
+        return 1
+    else:
+        return -1
+
+
+def cmpDuration(ufo1, ufo2):
+    """
+    Esta función compara dos duraciones.
+    """
+    duration1 = ufo1['duration (seconds)']
+    duration2 = ufo2['duration (seconds)']
+
+    if duration1 == duration2:
+        return 0
+    elif duration1 > duration2:
         return 1
     else:
         return -1
 
 
 # Funciones de ordenamiento
-
-
-def sortCity(list):
-    mg.sort(list, cmpCity)
-
-
-"""
-def sortDate(list):
-    mg.sort(list, cmpDate)
-"""
