@@ -109,7 +109,7 @@ while True:
         # city = str(input('Ingrese la ciudad: '))
         # result = controller.getCitySightings(analyzer, city)
         # printCitySightings(city, result)
-        print(mp.get(analyzer['cityIndex'], 'las vegas'))
+        print(mp.get(analyzer['cityIndex'], 'phoenix'))
 
     else:
         sys.exit(0)

@@ -93,17 +93,8 @@ def addCity(analyzer, ufo):
     entry = mp.get(cityIndex, city)
     value = me.getValue(entry)
     addDateTime(value['DateTime'], ufo)
-
-    """
-    pair = om.get(value['DateTime'], date)
-    arrayList = me.valueSet(pair)
-
-    size = 0
-    for element in lt.iterator(arrayList):
-        size += lt.size(element)
-
-    value['count'] = size
-    """
+    count = om.size(value['DateTime'])
+    value['count'] = count
 
 
 def addDateTime(map, ufo):
