@@ -148,10 +148,18 @@ def addDuration(analyzer, ufo):
 
 
 def getDuration(analyzer, min_key, max_key):
+    """
+    Retorna los avistamientos en un rango de duración.
+    Retorna el total de avistamientos en este rango.
+    """
     durationIndex = analyzer['durationIndex']
     values = om.values(durationIndex, min_key, max_key)
+    size = 0
 
-    return values
+    for element in lt.iterator(values):
+        size += element['count']
+
+    return values, size
 
 
 # Funciones de comparación

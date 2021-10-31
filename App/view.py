@@ -99,24 +99,10 @@ def printDuration(analyzer, result):
           '\nDuración (segundos): ' + str(max_key) +
           '. Contador: ' + str(value['count']))
     # -----------------------------------------------------------
-    size = result['elements'][0]['count']
-    print('\nHay un total de ' + str(size) +
+    print('\nHay un total de ' + str(result[1]) +
           ' avistamientos en este rango de duraciones')
     # -----------------------------------------------------------
     print('\nLos primero y ultimos tres avistamientos en este rango son: ')
-    """
-    i = 1
-    while i <= 3:
-        ufo = lt.getElement(result, i)
-        printUFO(ufo)
-        i += 1
-
-    i = -2
-    while i <= 0:
-        ufo = lt.getElement(result, i)
-        printUFO(ufo)
-        i += 1
-    """
 
 
 def printMenu():
