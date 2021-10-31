@@ -62,8 +62,9 @@ def loadData(analyzer, ufosfile):
 
 # Funciones de ordenamiento
 
+
 # Funciones de consulta sobre el catálogo
 
 
-def getCitySightings(analyzer, city):
-    return model.getCitySightings(analyzer, city)
+def getDuration(analyzer, min_key, max_key):
+    return model.getDuration(analyzer, min_key, max_key)

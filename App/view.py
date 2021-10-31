@@ -43,7 +43,6 @@ operación solicitada
 
 
 def printUFO(ufo):
-    ufo = ufo['elements'][0]
     print('Fecha y hora: ' + ufo['datetime'] +
           '. Ciudad: ' + ufo['city'] +
           '. País: ' + ufo['country'] +
@@ -72,22 +71,56 @@ def printCity(analyzer, city):
     i = 1
     while i <= 3:
         ufo = lt.getElement(ufos, i)
+        ufo = ufo['elements'][0]
         printUFO(ufo)
         i += 1
 
     i = -2
     while i <= 0:
         ufo = lt.getElement(ufos, i)
+        ufo = ufo['elements'][0]
         printUFO(ufo)
         i += 1
 
 
-ufosfile = 'UFOS//UFOS-utf8-small.csv'
-controlador = None
+def printDuration(analyzer, result):
+    """
+    Esta función imprime el requerimiento 2.
+    """
+    durationIndex = analyzer['durationIndex']
+    size = om.size(durationIndex)
+    print('\nHay un total de ' + str(size) +
+          ' diferentes duraciones de avistamientos UFO')
+    # -----------------------------------------------------------
+    max_key = om.maxKey(durationIndex)
+    entry = om.get(durationIndex, max_key)
+    value = me.getValue(entry)
+    print('\nEl avistamiento UFO más largo es: ' +
+          '\nDuración (segundos): ' + str(max_key) +
+          '. Contador: ' + str(value['count']))
+    # -----------------------------------------------------------
+    size = result['elements'][0]['count']
+    print('\nHay un total de ' + str(size) +
+          ' avistamientos en este rango de duraciones')
+    # -----------------------------------------------------------
+    print('\nLos primero y ultimos tres avistamientos en este rango son: ')
+    """
+    i = 1
+    while i <= 3:
+        ufo = lt.getElement(result, i)
+        printUFO(ufo)
+        i += 1
+
+    i = -2
+    while i <= 0:
+        ufo = lt.getElement(result, i)
+        printUFO(ufo)
+        i += 1
+    """
 
 
 def printMenu():
-    print("Bienvenido")
+    print("\nBienvenido")
     print("1- Inicializar analizador")
     print("2- Cargar información de avistamientos")
     print("3- Consultar los avistamientos en una ciudad")
@@ -97,6 +130,8 @@ def printMenu():
     print("7- Consultar los avistamientos de una zona geográfica")
 
 
+ufosfile = 'UFOS//UFOS-utf8-small.csv'
+controlador = None
 catalog = None
 
 
@@ -117,13 +152,14 @@ while True:
         controller.loadData(analyzer, ufosfile)
 
     elif inputs == 3:
-        city = str(input('Ingrese la ciudad: '))
+        city = str(input('\nIngrese la ciudad: '))
         printCity(analyzer, city)
 
     elif inputs == 4:
-        # min_key = float(input('Ingrese el limite inferior: '))
-        # max_key = float(input('Ingrese el limire superior: '))
-        print(om.get(analyzer['durationIndex'], 172800.0))
+        min_key = float(input('\nIngrese el limite inferior: '))
+        max_key = float(input('Ingrese el limire superior: '))
+        result = controller.getDuration(analyzer, min_key, max_key)
+        printDuration(analyzer, result)
 
     else:
         sys.exit(0)

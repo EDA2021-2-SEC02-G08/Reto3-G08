@@ -147,6 +147,13 @@ def addDuration(analyzer, ufo):
 # Funciones de consulta
 
 
+def getDuration(analyzer, min_key, max_key):
+    durationIndex = analyzer['durationIndex']
+    values = om.values(durationIndex, min_key, max_key)
+
+    return values
+
+
 # Funciones de comparación
 
 
