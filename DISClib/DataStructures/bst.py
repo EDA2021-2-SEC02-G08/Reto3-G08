@@ -203,7 +203,7 @@ def valueSet(bst):
         Exception
     """
     try:
-        vlist = lt.newList('SINGLE_LINKED', bst['cmpfunction'])
+        vlist = lt.newList('ARRAY_LIST', bst['cmpfunction'])
         vlist = valueSetTree(bst['root'], vlist)
         return vlist
     except Exception as exp:

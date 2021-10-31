@@ -55,6 +55,9 @@ def newAnalyzer():
                                       maptype='PROBING',
                                       loadfactor=0.75)
 
+    analyzer['durationIndex'] = om.newMap(omaptype='RBT',
+                                          comparefunction=cmpDuration)
+
     return analyzer
 
 
@@ -64,6 +67,7 @@ def newAnalyzer():
 def addUFO(analyzer, ufo):
     lt.addLast(analyzer['ufos'], ufo)
     addCity(analyzer, ufo)
+    addDuration(analyzer, ufo)
 
     return analyzer
 
@@ -116,6 +120,30 @@ def addDateTime(map, ufo):
     lt.addLast(arrayList, ufo)
 
 
+def addDuration(analyzer, ufo):
+    """
+    Esta función crea la siguiente estructura de datos Map Ordered:
+    {key: duration, value: {count: count, ufos: [ufos]}
+    """
+    durationIndex = analyzer['durationIndex']
+    duration = float(ufo['duration (seconds)'])
+    ispresent = om.contains(durationIndex, duration)
+
+    if ispresent:
+        pass
+    else:
+        sightings = lt.newList('ARRAY_LIST')
+        count = 0
+        data = {'count': count, 'ufos': sightings}
+        om.put(durationIndex, duration, data)
+
+    entry = om.get(durationIndex, duration)
+    value = me.getValue(entry)
+    lt.addLast(value['ufos'], ufo)
+    count = lt.size(value['ufos'])
+    value['count'] = count
+
+
 # Funciones de consulta
 
 
@@ -124,7 +152,7 @@ def addDateTime(map, ufo):
 
 def cmpDates(datetime1, datetime2):
     """
-    Esta función compara dos fechas.
+    Esta función compara dos llaves de fechas.
     """
     if datetime1 == datetime2:
         return 0
@@ -134,13 +162,10 @@ def cmpDates(datetime1, datetime2):
         return -1
 
 
-def cmpDuration(ufo1, ufo2):
+def cmpDuration(duration1, duration2):
     """
-    Esta función compara dos duraciones.
+    Esta función compara dos llaves de duraciones.
     """
-    duration1 = ufo1['duration (seconds)']
-    duration2 = ufo2['duration (seconds)']
-
     if duration1 == duration2:
         return 0
     elif duration1 > duration2:

@@ -51,7 +51,7 @@ def printUFO(ufo):
           '. Forma del objeto: ' + ufo['shape'])
 
 
-def printCitySightings(analyzer, city):
+def printCity(analyzer, city):
     """
     Esta función imprime el requerimiento 1.
     """
@@ -68,6 +68,18 @@ def printCitySightings(analyzer, city):
     # ----------------------------------------------------------------------
     print('\nLos primero y ultimos tres avistamientos en esta ciudad son: ')
     ufos = om.valueSet(value['DateTime'])
+
+    i = 1
+    while i <= 3:
+        ufo = lt.getElement(ufos, i)
+        printUFO(ufo)
+        i += 1
+
+    i = -2
+    while i <= 0:
+        ufo = lt.getElement(ufos, i)
+        printUFO(ufo)
+        i += 1
 
 
 ufosfile = 'UFOS//UFOS-utf8-small.csv'
@@ -106,7 +118,12 @@ while True:
 
     elif inputs == 3:
         city = str(input('Ingrese la ciudad: '))
-        printCitySightings(analyzer, city)
+        printCity(analyzer, city)
+
+    elif inputs == 4:
+        # min_key = float(input('Ingrese el limite inferior: '))
+        # max_key = float(input('Ingrese el limire superior: '))
+        print(om.get(analyzer['durationIndex'], 172800.0))
 
     else:
         sys.exit(0)
