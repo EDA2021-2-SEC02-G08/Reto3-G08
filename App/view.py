@@ -43,11 +43,12 @@ operación solicitada
 
 
 def printUFO(ufo):
+    ufo = ufo['elements'][0]
     print('Fecha y hora: ' + ufo['datetime'] +
-          ' Ciudad: ' + ufo['city'] +
-          ' País: ' + ufo['country'] +
-          ' Duración (segundos): ' + ufo['duration (seconds)'] +
-          ' Forma del objeto: ' + ufo['shape'])
+          '. Ciudad: ' + ufo['city'] +
+          '. País: ' + ufo['country'] +
+          '. Duración (segundos): ' + ufo['duration (seconds)'] +
+          '. Forma del objeto: ' + ufo['shape'])
 
 
 def printCitySightings(analyzer, city):
@@ -66,8 +67,7 @@ def printCitySightings(analyzer, city):
           city + '.')
     # ----------------------------------------------------------------------
     print('\nLos primero y ultimos tres avistamientos en esta ciudad son: ')
-    print(om.minKey(value['DateTime']))
-    print(om.maxKey(value['DateTime']))
+    ufos = om.valueSet(value['DateTime'])
 
 
 ufosfile = 'UFOS//UFOS-utf8-small.csv'
