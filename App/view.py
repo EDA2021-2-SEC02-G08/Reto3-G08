@@ -103,6 +103,19 @@ def printDuration(analyzer, result):
           ' avistamientos en este rango de duraciones')
     # -----------------------------------------------------------
     print('\nLos primero y ultimos tres avistamientos en este rango son: ')
+    ufos = result[0]
+
+    i = 1
+    while i <= 3:
+        ufo = lt.getElement(ufos, i)
+        printUFO(ufo)
+        i += 1
+
+    i = -2
+    while i <= 0:
+        ufo = lt.getElement(ufos, i)
+        printUFO(ufo)
+        i += 1
 
 
 def printMenu():

@@ -154,12 +154,16 @@ def getDuration(analyzer, min_key, max_key):
     """
     durationIndex = analyzer['durationIndex']
     values = om.values(durationIndex, min_key, max_key)
+    arrayList = lt.newList('ARRAY_LIST')
     size = 0
 
     for element in lt.iterator(values):
         size += element['count']
+        element = element['ufos']
+        for sub_element in lt.iterator(element):
+            lt.addLast(arrayList, sub_element)
 
-    return values, size
+    return arrayList, size
 
 
 # Funciones de comparación
