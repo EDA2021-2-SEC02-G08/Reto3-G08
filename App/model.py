@@ -30,6 +30,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import orderedmap as om
+from DISClib.Algorithms.Sorting import mergesort as mg
 from datetime import datetime
 assert cf
 
@@ -56,7 +57,13 @@ def newAnalyzer():
                                       loadfactor=0.75)
 
     analyzer['durationIndex'] = om.newMap(omaptype='RBT',
-                                          comparefunction=cmpDuration)
+                                          comparefunction=cmpDurations)
+
+    analyzer['datetimeIndex'] = om.newMap(omaptype='RBT',
+                                          comparefunction=cmpDates)
+
+    analyzer['longitudeIndex'] = om.newMap(omaptype='RBT',
+                                           comparefunction=cmpLongitudes)
 
     return analyzer
 
@@ -68,6 +75,8 @@ def addUFO(analyzer, ufo):
     lt.addLast(analyzer['ufos'], ufo)
     addCity(analyzer, ufo)
     addDuration(analyzer, ufo)
+    addDateTime(analyzer['datetimeIndex'], ufo)
+    addLongitude(analyzer, ufo)
 
     return analyzer
 
@@ -144,6 +153,27 @@ def addDuration(analyzer, ufo):
     value['count'] = count
 
 
+def addLongitude(analyzer, ufo):
+    """
+    Esta función crea la siguiente estructura de datos Map Ordered:
+    {key: longitude, value: [ufos]}
+    """
+    longitudeIndex = analyzer['longitudeIndex']
+    longitude = round(float(ufo['longitude']), 2)
+    ispresent = om.contains(longitudeIndex, longitude)
+
+    if ispresent:
+        pass
+    else:
+        sightings = lt.newList('ARRAY_LIST')
+        om.put(longitudeIndex, longitude, sightings)
+
+    entry = om.get(longitudeIndex, longitude)
+    arrayList = me.getValue(entry)
+    lt.addLast(arrayList, ufo)
+    sortLatitude(arrayList)
+
+
 # Funciones de consulta
 
 
@@ -181,7 +211,7 @@ def cmpDates(datetime1, datetime2):
         return -1
 
 
-def cmpDuration(duration1, duration2):
+def cmpDurations(duration1, duration2):
     """
     Esta función compara dos llaves de duraciones.
     """
@@ -193,4 +223,30 @@ def cmpDuration(duration1, duration2):
         return -1
 
 
+def cmpLongitudes(longitude1, longitude2):
+    """
+    Esta función compara dos llaves de longitudes.
+    """
+    if longitude1 == longitude2:
+        return 0
+    elif longitude1 > longitude2:
+        return 1
+    else:
+        return -1
+
+
+def cmpLatitudes(ufo1, ufo2):
+    """
+    Esta función compara dos latitudes para ordenarlas.
+    """
+    latitude1 = round(float(ufo1['latitude']), 2)
+    latitude2 = round(float(ufo2['latitude']), 2)
+
+    return latitude1 > latitude2
+
+
 # Funciones de ordenamiento
+
+
+def sortLatitude(arrayList):
+    mg.sort(arrayList, cmpLatitudes)

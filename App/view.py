@@ -160,6 +160,15 @@ while True:
         result = controller.getDuration(analyzer, min_key, max_key)
         printDuration(analyzer, result)
 
+    elif inputs == 5:
+        pass
+
+    elif inputs == 6:
+        print(om.minKey(analyzer['datetimeIndex']))
+
+    elif inputs == 7:
+        print(om.get(analyzer['longitudeIndex'], 176.25))
+
     else:
         sys.exit(0)
 
