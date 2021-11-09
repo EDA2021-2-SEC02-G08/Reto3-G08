@@ -47,8 +47,7 @@ def newAnalyzer():
                 'cityIndex': None,
                 'durationIndex': None,
                 'timeIndex': None,
-                'longitudeIndex': None
-                }
+                'longitudeIndex': None}
 
     analyzer['ufos'] = lt.newList('ARRAY_LIST')
 
@@ -64,7 +63,7 @@ def newAnalyzer():
                                           comparefunction=cmpDurations)
 
     analyzer['timeIndex'] = om.newMap(omaptype='RBT',
-                                      comparefunction=cmpTimes)
+                                      comparefunction=cmpDates)
 
     analyzer['longitudeIndex'] = om.newMap(omaptype='RBT',
                                            comparefunction=cmpLongitudes)
@@ -107,7 +106,7 @@ def addCity(analyzer, ufo):
         data = {'count': count, 'ufos': lst, 'DateTime': dateTime}
         mp.put(cityIndex, city, data)
 
-    entry = om.get(cityIndex, city)
+    entry = mp.get(cityIndex, city)
     value = me.getValue(entry)
     addDateTime(value['DateTime'], ufo)
     lt.addLast(value['ufos'], ufo)
@@ -160,7 +159,7 @@ def addDuration(analyzer, ufo):
 
 def addTime(analyzer, ufo):
     timeIndex = analyzer['timeIndex']
-    time = datetime.fromisoformat(ufo['datetime']).time()
+    time = datetime.fromisoformat(ufo['datetime'])
     ispresent = om.contains(timeIndex, time)
 
     if ispresent:
@@ -222,18 +221,6 @@ def getDuration(analyzer, min_key, max_key):
 
 
 def cmpDates(datetime1, datetime2):
-    """
-    Esta función compara dos llaves de fechas.
-    """
-    if datetime1 == datetime2:
-        return 0
-    elif datetime1 > datetime2:
-        return 1
-    else:
-        return -1
-
-
-def cmpTimes(datetime1, datetime2):
     """
     Esta función compara dos llaves de fechas.
     """
