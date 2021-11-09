@@ -64,7 +64,7 @@ def newAnalyzer():
                                           comparefunction=cmpDurations)
 
     analyzer['timeIndex'] = om.newMap(omaptype='RBT',
-                                          comparefunction=cmpTimes)
+                                      comparefunction=cmpTimes)
 
     analyzer['longitudeIndex'] = om.newMap(omaptype='RBT',
                                            comparefunction=cmpLongitudes)
@@ -102,10 +102,10 @@ def addCity(analyzer, ufo):
     else:
         dateTime = om.newMap(omaptype='RBT',
                              comparefunction=cmpDates)
-        lst = lt.newList('ARRAY_LIST')
+        lst = lt.newList('SINGLE_LINKED')
         count = 0
         data = {'count': count, 'ufos': lst, 'DateTime': dateTime}
-        om.put(cityIndex, city, data)
+        mp.put(cityIndex, city, data)
 
     entry = om.get(cityIndex, city)
     value = me.getValue(entry)
@@ -166,10 +166,10 @@ def addTime(analyzer, ufo):
     if ispresent:
         pass
     else:
-        dates = om.newMap(omaptype='RBT', 
+        dates = om.newMap(omaptype='RBT',
                           comparefunction=cmpDates)
         om.put(timeIndex, time, dates)
-    
+
     entry = om.get(timeIndex, time)
     dates = me.getValue(entry)
     addDateTime(dates, ufo)
@@ -231,6 +231,7 @@ def cmpDates(datetime1, datetime2):
         return 1
     else:
         return -1
+
 
 def cmpTimes(datetime1, datetime2):
     """
