@@ -98,15 +98,16 @@ def addCity(analyzer, ufo):
     else:
         dateTime = om.newMap(omaptype='RBT',
                              comparefunction=cmpDates)
+        lst = lt.newList('ARRAY_LIST')
         count = 0
-        data = {'count': count, 'DateTime': dateTime}
+        data = {'count': count, 'ufos': lst, 'DateTime': dateTime}
         mp.put(cityIndex, city, data)
 
     entry = mp.get(cityIndex, city)
     value = me.getValue(entry)
     addDateTime(value['DateTime'], ufo)
-    count = om.size(value['DateTime'])
-    value['count'] = count
+    lt.addLast(value['ufos'], ufo)
+    value['count'] = lt.size(value['ufos'])
 
 
 def addDateTime(map, ufo):
