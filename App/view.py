@@ -22,6 +22,7 @@
 
 
 import config as cf
+import time as time
 from DISClib.ADT import orderedmap as om
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
@@ -148,7 +149,11 @@ while True:
 
     elif inputs == 2:
         print("Cargando información de los archivos ....")
+        start_time = time.perf_counter()
         controller.loadData(analyzer, ufosfile)
+        stop_time = time.perf_counter()
+        delta_time = (stop_time - start_time) * 1000
+        print(delta_time)
 
     elif inputs == 3:
         city = str(input('\nIngrese la ciudad: '))

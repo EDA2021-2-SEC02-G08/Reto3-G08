@@ -237,9 +237,9 @@ def cmpTimes(datetime1, datetime2):
     """
     Esta función compara dos llaves de fechas.
     """
-    if datetime1.time() == datetime2.time():
+    if datetime1 == datetime2:
         return 0
-    elif datetime1.time() > datetime2.time():
+    elif datetime1 > datetime2:
         return 1
     else:
         return -1
