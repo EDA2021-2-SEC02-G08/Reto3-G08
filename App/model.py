@@ -44,7 +44,11 @@ def newAnalyzer():
     Retorna el analizador inicializado.
     """
     analyzer = {'ufos': None,
-                'cityIndex': None}
+                'cityIndex': None,
+                'durationIndex': None,
+                'timeIndex': None,
+                'longitudeIndex': None
+                }
 
     analyzer['ufos'] = lt.newList('ARRAY_LIST')
 
@@ -59,8 +63,8 @@ def newAnalyzer():
     analyzer['durationIndex'] = om.newMap(omaptype='RBT',
                                           comparefunction=cmpDurations)
 
-    analyzer['datetimeIndex'] = om.newMap(omaptype='RBT',
-                                          comparefunction=cmpDates)
+    analyzer['timeIndex'] = om.newMap(omaptype='RBT',
+                                          comparefunction=cmpTimes)
 
     analyzer['longitudeIndex'] = om.newMap(omaptype='RBT',
                                            comparefunction=cmpLongitudes)
@@ -75,7 +79,7 @@ def addUFO(analyzer, ufo):
     lt.addLast(analyzer['ufos'], ufo)
     addCity(analyzer, ufo)
     addDuration(analyzer, ufo)
-    addDateTime(analyzer['datetimeIndex'], ufo)
+    addTime(analyzer, ufo)
     addLongitude(analyzer, ufo)
 
     return analyzer
@@ -101,9 +105,9 @@ def addCity(analyzer, ufo):
         lst = lt.newList('ARRAY_LIST')
         count = 0
         data = {'count': count, 'ufos': lst, 'DateTime': dateTime}
-        mp.put(cityIndex, city, data)
+        om.put(cityIndex, city, data)
 
-    entry = mp.get(cityIndex, city)
+    entry = om.get(cityIndex, city)
     value = me.getValue(entry)
     addDateTime(value['DateTime'], ufo)
     lt.addLast(value['ufos'], ufo)
@@ -152,6 +156,23 @@ def addDuration(analyzer, ufo):
     lt.addLast(value['ufos'], ufo)
     count = lt.size(value['ufos'])
     value['count'] = count
+
+
+def addTime(analyzer, ufo):
+    timeIndex = analyzer['timeIndex']
+    time = datetime.fromisoformat(ufo['datetime']).time()
+    ispresent = om.contains(timeIndex, time)
+
+    if ispresent:
+        pass
+    else:
+        dates = om.newMap(omaptype='RBT', 
+                          comparefunction=cmpDates)
+        om.put(timeIndex, time, dates)
+    
+    entry = om.get(timeIndex, time)
+    dates = me.getValue(entry)
+    addDateTime(dates, ufo)
 
 
 def addLongitude(analyzer, ufo):
@@ -207,6 +228,17 @@ def cmpDates(datetime1, datetime2):
     if datetime1 == datetime2:
         return 0
     elif datetime1 > datetime2:
+        return 1
+    else:
+        return -1
+
+def cmpTimes(datetime1, datetime2):
+    """
+    Esta función compara dos llaves de fechas.
+    """
+    if datetime1.time() == datetime2.time():
+        return 0
+    elif datetime1.time() > datetime2.time():
         return 1
     else:
         return -1
