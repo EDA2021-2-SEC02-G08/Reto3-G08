@@ -156,7 +156,7 @@ while True:
 
     elif inputs == 4:
         min_key = float(input('\nIngrese el limite inferior: '))
-        max_key = float(input('Ingrese el limire superior: '))
+        max_key = float(input('Ingrese el limite superior: '))
         result = controller.getDuration(analyzer, min_key, max_key)
         printDuration(analyzer, result)
 
