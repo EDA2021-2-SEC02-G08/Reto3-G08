@@ -48,8 +48,7 @@ def newAnalyzer():
                 'durationIndex': None,
                 'timeIndex': None,
                 'dateIndex': None,
-                'longitudeIndex': None
-                }
+                'longitudeIndex': None}
 
     analyzer['ufos'] = lt.newList('ARRAY_LIST')
 
@@ -315,6 +314,7 @@ def LatitudeBinarySearch(lst, element):
 
     return mid
 
+
 # Funciones de comparación
 
 
@@ -325,18 +325,6 @@ def cmpDates(datetime1, datetime2):
     if datetime1 == datetime2:
         return 0
     elif datetime1 > datetime2:
-        return 1
-    else:
-        return -1
-
-
-def cmpOnlyDates(datetime1, datetime2):
-    """
-    Esta función compara dos llaves de fechas.
-    """
-    if datetime1.date() == datetime2.date():
-        return 0
-    elif datetime1.date() > datetime2.date():
         return 1
     else:
         return -1
