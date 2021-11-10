@@ -47,6 +47,7 @@ def newAnalyzer():
                 'cityIndex': None,
                 'durationIndex': None,
                 'timeIndex': None,
+                'dateIndex': None,
                 'longitudeIndex': None
                 }
 
@@ -64,7 +65,10 @@ def newAnalyzer():
                                           comparefunction=cmpDurations)
 
     analyzer['timeIndex'] = om.newMap(omaptype='RBT',
-                                          comparefunction=cmpTimes)
+                                      comparefunction=cmpTimes)
+
+    analyzer['dateIndex'] = om.newMap(omaptype='RBT',
+                                      comparefunction=cmpDates)
 
     analyzer['longitudeIndex'] = om.newMap(omaptype='RBT',
                                            comparefunction=cmpLongitudes)
@@ -80,6 +84,7 @@ def addUFO(analyzer, ufo):
     addCity(analyzer, ufo)
     addDuration(analyzer, ufo)
     addTime(analyzer, ufo)
+    addDateTime(analyzer,)
     addLongitude(analyzer, ufo)
 
     return analyzer
@@ -101,7 +106,7 @@ def addCity(analyzer, ufo):
         pass
     else:
         dateTime = om.newMap(omaptype='RBT',
-                             comparefunction=cmpDates)
+                             comparefunction=cmpDateTimes)
         lst = lt.newList('ARRAY_LIST')
         count = 0
         data = {'count': count, 'ufos': lst, 'DateTime': dateTime}
@@ -167,13 +172,12 @@ def addTime(analyzer, ufo):
         pass
     else:
         dates = om.newMap(omaptype='RBT', 
-                          comparefunction=cmpDates)
+                          comparefunction=cmpDateTimes)
         om.put(timeIndex, time, dates)
     
     entry = om.get(timeIndex, time)
     dates = me.getValue(entry)
     addDateTime(dates, ufo)
-
 
 def addLongitude(analyzer, ufo):
     """
@@ -237,15 +241,25 @@ def getDuration(analyzer, min_key, max_key):
     return arrayList, size
 
 
-def getSightingsByDaytime(analyzer, minHM, maxHM):
+def getSightingsByTime(analyzer, minHM, maxHM):
     timeIndex = analyzer['timeIndex']
     values = om.values(timeIndex, minHM, maxHM)
+    ufos = lt.newList('ARRAY_LIST')
+    for date in lt.iterator(values):
+        lst = om.valueSet(date)
+        for ufo in lt.iterator(lst):
+            lt.addLast(ufo)
     
+    size = lt.size(ufos)
+    return size, ufos
+    
+
+
 
 # Funciones de comparación
 
 
-def cmpDates(datetime1, datetime2):
+def cmpDateTimes(datetime1, datetime2):
     """
     Esta función compara dos llaves de fechas.
     """
@@ -255,6 +269,19 @@ def cmpDates(datetime1, datetime2):
         return 1
     else:
         return -1
+
+
+def cmpDates(datetime1, datetime2):
+    """
+    Esta función compara dos llaves de fechas.
+    """
+    if datetime1.date() == datetime2.date():
+        return 0
+    elif datetime1.date() > datetime2.date():
+        return 1
+    else:
+        return -1
+
 
 def cmpTimes(datetime1, datetime2):
     """
