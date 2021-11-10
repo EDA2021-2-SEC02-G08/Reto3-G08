@@ -23,14 +23,12 @@
 
 import config as cf
 from DISClib.ADT import orderedmap as om
-from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
 import sys
 import controller
 from datetime import time
 assert cf
-
 
 
 """
@@ -102,7 +100,6 @@ def printMenu():
     print("7- Consultar los avistamientos de una zona geográfica")
 
 
-
 """
 Menu principal
 """
@@ -152,10 +149,10 @@ while True:
         printFirstAndLast(result[2])
 
     elif inputs == 6:
-        print(om.minKey(analyzer['datetimeIndex']))
+        pass
 
     elif inputs == 7:
-        print(om.get(analyzer['longitudeIndex'], 176.25))
+        pass
 
     else:
         sys.exit(0)

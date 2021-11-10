@@ -173,11 +173,12 @@ def addTime(analyzer, ufo):
     else:
         ufos = lt.newList('ARRAY_LIST')
         om.put(timeIndex, time, ufos)
-    
+
     entry = om.get(timeIndex, time)
     ufos = me.getValue(entry)
     lt.addLast(ufos, ufo)
     sortDates(ufos)
+
 
 def addLongitude(analyzer, ufo):
     """
@@ -202,10 +203,11 @@ def addLongitude(analyzer, ufo):
 
 # Funciones de consulta
 
+
 def getCitySightings(analyzer, city):
     """
     Retorna el número total de ciudades con avistamientos, el total de
-    avistamientos en city y los avistamientos en city 
+    avistamientos en city y los avistamientos en city
     ordenados cronológicamente
     """
     cityIndex = analyzer['cityIndex']
@@ -254,23 +256,23 @@ def getSightingsByTime(analyzer, minHM, maxHM):
     for lst in lt.iterator(values):
         for ufo in lt.iterator(lst):
             lt.addLast(ufos, ufo)
-    
+
     return maxTime, N_MaxTime, ufos
-    
+
 
 def getSightingsByDate(analyzer, minDate, maxDate):
     dateIndex = analyzer['dateIndex']
     oldDate = om.minKey(dateIndex)
     entry = om.get(dateIndex, oldDate)
-    oldDateUFOs = me.getValue(entry)
+    oldDate = me.getValue(entry)
     N_oldDate = lt.size(oldDate)
 
     values = om.values(dateIndex, minDate, maxDate)
     ufos = lt.newList('ARRAY_LIST')
     for lst in lt.iterator(values):
         for ufo in lt.iterator(lst):
-            lt.addLast(ufos)
-    
+            lt.addLast(ufo)
+
     return oldDate, N_oldDate, ufos
 
 
@@ -286,11 +288,12 @@ def getSightingsByCoordinates(analyzer, minLon, maxLon, minLat, maxLat):
         sublst = lt.subList(lst, pos_min, n)
         for ufo in lt.iterator(sublst):
             lt.addLast(ufos, ufo)
-    
+
     return ufos
 
 
 # Funciones auxiliares
+
 
 def LatitudeBinarySearch(lst, element):
     """
