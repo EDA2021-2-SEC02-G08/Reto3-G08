@@ -47,7 +47,9 @@ def newAnalyzer():
                 'cityIndex': None,
                 'durationIndex': None,
                 'timeIndex': None,
-                'longitudeIndex': None}
+                'dateIndex': None,
+                'longitudeIndex': None
+                }
 
     analyzer['ufos'] = lt.newList('ARRAY_LIST')
 
@@ -63,6 +65,9 @@ def newAnalyzer():
                                           comparefunction=cmpDurations)
 
     analyzer['timeIndex'] = om.newMap(omaptype='RBT',
+                                      comparefunction=cmpTimes)
+
+    analyzer['dateIndex'] = om.newMap(omaptype='RBT',
                                       comparefunction=cmpDates)
 
     analyzer['longitudeIndex'] = om.newMap(omaptype='RBT',
@@ -79,6 +84,7 @@ def addUFO(analyzer, ufo):
     addCity(analyzer, ufo)
     addDuration(analyzer, ufo)
     addTime(analyzer, ufo)
+    addDateTime(analyzer['dateIndex'], ufo)
     addLongitude(analyzer, ufo)
 
     return analyzer
@@ -101,7 +107,7 @@ def addCity(analyzer, ufo):
     else:
         dateTime = om.newMap(omaptype='RBT',
                              comparefunction=cmpDates)
-        lst = lt.newList('SINGLE_LINKED')
+        lst = lt.newList('ARRAY_LIST')
         count = 0
         data = {'count': count, 'ufos': lst, 'DateTime': dateTime}
         mp.put(cityIndex, city, data)
@@ -159,20 +165,19 @@ def addDuration(analyzer, ufo):
 
 def addTime(analyzer, ufo):
     timeIndex = analyzer['timeIndex']
-    time = datetime.fromisoformat(ufo['datetime'])
+    time = datetime.fromisoformat(ufo['datetime']).time()
     ispresent = om.contains(timeIndex, time)
 
     if ispresent:
         pass
     else:
-        dates = om.newMap(omaptype='RBT',
-                          comparefunction=cmpDates)
-        om.put(timeIndex, time, dates)
-
+        ufos = lt.newList('ARRAY_LIST')
+        om.put(timeIndex, time, ufos)
+    
     entry = om.get(timeIndex, time)
-    dates = me.getValue(entry)
-    addDateTime(dates, ufo)
-
+    ufos = me.getValue(entry)
+    lt.addLast(ufos, ufo)
+    sortDates(ufos)
 
 def addLongitude(analyzer, ufo):
     """
@@ -197,6 +202,26 @@ def addLongitude(analyzer, ufo):
 
 # Funciones de consulta
 
+def getCitySightings(analyzer, city):
+    """
+    Retorna el número total de ciudades con avistamientos, el total de
+    avistamientos en city y los avistamientos en city 
+    ordenados cronológicamente
+    """
+    cityIndex = analyzer['cityIndex']
+    N_cities = lt.size(mp.keySet(cityIndex))
+    pair = mp.get(cityIndex, city)
+    if pair is not None:
+        data = me.getValue(pair)
+        lst = om.valueSet(data['DateTime'])
+        ufos = lt.newList('ARRAY_LIST')
+        for it in lt.iterator(lst):
+            for ufo in lt.iterator(it):
+                lt.addLast(ufos, ufo)
+        return True, N_cities, data['count'], ufos
+    else:
+        return False, N_cities
+
 
 def getDuration(analyzer, min_key, max_key):
     """
@@ -217,6 +242,76 @@ def getDuration(analyzer, min_key, max_key):
     return arrayList, size
 
 
+def getSightingsByTime(analyzer, minHM, maxHM):
+    timeIndex = analyzer['timeIndex']
+    maxTime = om.maxKey(timeIndex)
+    entry = om.get(timeIndex, maxTime)
+    MaxTimeUFOs = me.getValue(entry)
+    N_MaxTime = lt.size(MaxTimeUFOs)
+
+    values = om.values(timeIndex, minHM, maxHM)
+    ufos = lt.newList('ARRAY_LIST')
+    for lst in lt.iterator(values):
+        for ufo in lt.iterator(lst):
+            lt.addLast(ufos, ufo)
+    
+    return maxTime, N_MaxTime, ufos
+    
+
+def getSightingsByDate(analyzer, minDate, maxDate):
+    dateIndex = analyzer['dateIndex']
+    oldDate = om.minKey(dateIndex)
+    entry = om.get(dateIndex, oldDate)
+    oldDateUFOs = me.getValue(entry)
+    N_oldDate = lt.size(oldDate)
+
+    values = om.values(dateIndex, minDate, maxDate)
+    ufos = lt.newList('ARRAY_LIST')
+    for lst in lt.iterator(values):
+        for ufo in lt.iterator(lst):
+            lt.addLast(ufos)
+    
+    return oldDate, N_oldDate, ufos
+
+
+def getSightingsByCoordinates(analyzer, minLon, maxLon, minLat, maxLat):
+    lonIndex = analyzer['longitudeIndex']
+    values = om.values(lonIndex, minLon, maxLon)
+    ufos = lt.newList('ARRAY_LIST')
+
+    for lst in lt.iterator(values):
+        pos_min = LatitudeBinarySearch(lst, minLat)
+        pos_max = LatitudeBinarySearch(lst, maxLat)
+        n = pos_max - pos_max
+        sublst = lt.subList(lst, pos_min, n)
+        for ufo in lt.iterator(sublst):
+            lt.addLast(ufos, ufo)
+    
+    return ufos
+
+
+# Funciones auxiliares
+
+def LatitudeBinarySearch(lst, element):
+    """
+    Retorna la posición de un elemento en una lista organizada.
+    """
+    low = 0
+    high = lt.size(lst) - 1
+    mid = 0
+
+    while low <= high:
+        mid = (high + low) // 2
+        cmp = lt.getElement(lst, mid)
+        if int(cmp['latitude']) < element:
+            low = mid + 1
+        elif int(cmp['latitude']) > element:
+            high = mid - 1
+        else:
+            return mid
+
+    return mid
+
 # Funciones de comparación
 
 
@@ -227,6 +322,30 @@ def cmpDates(datetime1, datetime2):
     if datetime1 == datetime2:
         return 0
     elif datetime1 > datetime2:
+        return 1
+    else:
+        return -1
+
+
+def cmpOnlyDates(datetime1, datetime2):
+    """
+    Esta función compara dos llaves de fechas.
+    """
+    if datetime1.date() == datetime2.date():
+        return 0
+    elif datetime1.date() > datetime2.date():
+        return 1
+    else:
+        return -1
+
+
+def cmpTimes(time1, time2):
+    """
+    Esta función compara dos llaves de fechas.
+    """
+    if time1 == time2:
+        return 0
+    elif time1 > time2:
         return 1
     else:
         return -1
@@ -266,8 +385,20 @@ def cmpLatitudes(ufo1, ufo2):
     return latitude1 > latitude2
 
 
+def compareDates(ufo1, ufo2):
+    """
+    Compara las fechas de dos avistamientos.
+    """
+    date1 = datetime.fromisoformat(ufo1['datetime'])
+    date2 = datetime.fromisoformat(ufo2['datetime'])
+    return date1 < date2
+
 # Funciones de ordenamiento
 
 
 def sortLatitude(arrayList):
     mg.sort(arrayList, cmpLatitudes)
+
+
+def sortDates(lst):
+    mg.sort(lst, compareDates)
