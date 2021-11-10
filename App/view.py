@@ -28,7 +28,9 @@ from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
 import sys
 import controller
+from datetime import time
 assert cf
+
 
 
 """
@@ -142,8 +144,12 @@ while True:
     elif inputs == 5:
         minTime = str(input('\nIngrese el límite inferior (HH:MM): '))
         maxTime = str(input('\nIngrese el límite superior (HH:MM): '))
+        minTime = time.fromisoformat(minTime)
+        maxTime = time.fromisoformat(maxTime)
         result = controller.getSightingsByTime(analyzer, minTime, maxTime)
-        
+        print('La hora más tardía en la que se han registrado avistamientos es:')
+        print(result[0], 'con ' + str(result[1]) + ' avistamientos.')
+        printFirstAndLast(result[2])
 
     elif inputs == 6:
         print(om.minKey(analyzer['datetimeIndex']))

@@ -171,13 +171,13 @@ def addTime(analyzer, ufo):
     if ispresent:
         pass
     else:
-        dates = om.newMap(omaptype='RBT', 
-                          comparefunction=cmpDates)
-        om.put(timeIndex, time, dates)
+        ufos = lt.newList('ARRAY_LIST')
+        om.put(timeIndex, time, ufos)
     
     entry = om.get(timeIndex, time)
-    dates = me.getValue(entry)
-    addDateTime(dates, ufo)
+    ufos = me.getValue(entry)
+    lt.addLast(ufos, ufo)
+    sortDates(ufos)
 
 def addLongitude(analyzer, ufo):
     """
@@ -251,10 +251,9 @@ def getSightingsByTime(analyzer, minHM, maxHM):
 
     values = om.values(timeIndex, minHM, maxHM)
     ufos = lt.newList('ARRAY_LIST')
-    for date in lt.iterator(values):
-        lst = om.valueSet(date)
+    for lst in lt.iterator(values):
         for ufo in lt.iterator(lst):
-            lt.addLast(ufos)
+            lt.addLast(ufos, ufo)
     
     return maxTime, N_MaxTime, ufos
     
@@ -386,8 +385,20 @@ def cmpLatitudes(ufo1, ufo2):
     return latitude1 > latitude2
 
 
+def compareDates(ufo1, ufo2):
+    """
+    Compara las fechas de dos avistamientos.
+    """
+    date1 = datetime.fromisoformat(ufo1['datetime'])
+    date2 = datetime.fromisoformat(ufo2['datetime'])
+    return date1 < date2
+
 # Funciones de ordenamiento
 
 
 def sortLatitude(arrayList):
     mg.sort(arrayList, cmpLatitudes)
+
+
+def sortDates(lst):
+    mg.sort(lst, compareDates)
