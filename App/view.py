@@ -155,8 +155,8 @@ while True:
         printCity(analyzer, city)
 
     elif inputs == 4:
-        min_key = float(input('\nIngrese el limite inferior: '))
-        max_key = float(input('Ingrese el limire superior: '))
+        min_key = float(input('\nIngrese el límite inferior: '))
+        max_key = float(input('Ingrese el límite superior: '))
         result = controller.getDuration(analyzer, min_key, max_key)
         printDuration(analyzer, result)
 
