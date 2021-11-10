@@ -50,35 +50,16 @@ def printUFO(ufo):
           '. Forma del objeto: ' + ufo['shape'])
 
 
-def printCity(analyzer, city):
-    """
-    Esta función imprime el requerimiento 1.
-    """
-    # ----------------------------------------------------------------------
-    cityIndex = analyzer['cityIndex']
-    total = lt.size(mp.keySet(cityIndex))
-    print('\nHay ' + str(total) +
-          ' ciudades donde se han reportado avistamientos.')
-    # ----------------------------------------------------------------------
-    entry = mp.get(cityIndex, city)
-    value = me.getValue(entry)
-    print('Se han reportado ' + str(value['count']) + ' avistamientos en ' +
-          city + '.')
-    # ----------------------------------------------------------------------
-    print('\nLos primero y ultimos tres avistamientos en esta ciudad son: ')
-    ufos = om.valueSet(value['DateTime'])
-
+def printFirstAndLast(lst):
     i = 1
     while i <= 3:
-        ufo = lt.getElement(ufos, i)
-        ufo = ufo['elements'][0]
+        ufo = lt.getElement(lst, i)
         printUFO(ufo)
         i += 1
 
     i = -2
     while i <= 0:
-        ufo = lt.getElement(ufos, i)
-        ufo = ufo['elements'][0]
+        ufo = lt.getElement(lst, i)
         printUFO(ufo)
         i += 1
 
@@ -105,17 +86,7 @@ def printDuration(analyzer, result):
     print('\nLos primero y ultimos tres avistamientos en este rango son: ')
     ufos = result[0]
 
-    i = 1
-    while i <= 3:
-        ufo = lt.getElement(ufos, i)
-        printUFO(ufo)
-        i += 1
-
-    i = -2
-    while i <= 0:
-        ufo = lt.getElement(ufos, i)
-        printUFO(ufo)
-        i += 1
+    printFirstAndLast(ufos)
 
 
 def printMenu():
@@ -128,10 +99,6 @@ def printMenu():
     print("6- Consultar los avistamientos en un rango de fechas")
     print("7- Consultar los avistamientos de una zona geográfica")
 
-
-ufosfile = 'UFOS//UFOS-utf8-small.csv'
-controlador = None
-catalog = None
 
 
 """
@@ -148,11 +115,23 @@ while True:
 
     elif inputs == 2:
         print("Cargando información de los archivos ....")
-        controller.loadData(analyzer, ufosfile)
+        controller.loadData(analyzer)
 
     elif inputs == 3:
         city = str(input('\nIngrese la ciudad: '))
-        printCity(analyzer, city)
+        result = controller.getSightingsByCity(analyzer, city)
+        found = result[0]
+        total = result[1]
+        print('\nHay ' + str(total) +
+              ' ciudades donde se han reportado avistamientos.')
+        if found:
+            N_sighthings = result[2]
+            ufos = result[3]
+            print('Se han reportado ' + str(N_sighthings) + ' avistamientos en ' +
+                  city + '.')
+            printFirstAndLast(ufos)
+        else:
+            print('No se encontró la ciudad ' + city + '.')
 
     elif inputs == 4:
         min_key = float(input('\nIngrese el límite inferior: '))
@@ -161,7 +140,10 @@ while True:
         printDuration(analyzer, result)
 
     elif inputs == 5:
-        pass
+        minTime = str(input('\nIngrese el límite inferior (HH:MM): '))
+        maxTime = str(input('\nIngrese el límite superior (HH:MM): '))
+        result = controller.getSightingsByTime(analyzer, minTime, maxTime)
+        
 
     elif inputs == 6:
         print(om.minKey(analyzer['datetimeIndex']))

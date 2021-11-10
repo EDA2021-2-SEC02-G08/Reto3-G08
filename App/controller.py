@@ -46,11 +46,11 @@ def init():
 # Funciones para la carga de datos
 
 
-def loadData(analyzer, ufosfile):
+def loadData(analyzer):
     """
     Carga los datos de los archivos CSV en el modelo
     """
-    ufosfile = cf.data_dir + ufosfile
+    ufosfile = cf.data_dir + 'UFOS/UFOS-utf8-small.csv'
     input_file = csv.DictReader(open(ufosfile, encoding="utf-8"),
                                 delimiter=",")
 
@@ -65,6 +65,22 @@ def loadData(analyzer, ufosfile):
 
 # Funciones de consulta sobre el catálogo
 
+def getSightingsByCity(analyzer, city):
+    return model.getCitySightings(analyzer, city)
+
 
 def getDuration(analyzer, min_key, max_key):
     return model.getDuration(analyzer, min_key, max_key)
+
+
+def getSightingsByTime(analyzer, minTime, maxTime):
+    return model.getSightingsByTime(analyzer, minTime, maxTime)
+
+
+def getSightingsByDate(analyzer, minDate, maxDate):
+    return model.getSightingsByDate(analyzer, minDate, maxDate)
+
+
+def getSightingsByCoordinates(analyzer, minLon, maxLon, minLat, maxLat):
+    return model.getSightingsByCoordinates(analyzer, minLon, maxLon, minLat,
+                                           maxLat)

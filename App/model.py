@@ -110,9 +110,9 @@ def addCity(analyzer, ufo):
         lst = lt.newList('ARRAY_LIST')
         count = 0
         data = {'count': count, 'ufos': lst, 'DateTime': dateTime}
-        om.put(cityIndex, city, data)
+        mp.put(cityIndex, city, data)
 
-    entry = om.get(cityIndex, city)
+    entry = mp.get(cityIndex, city)
     value = me.getValue(entry)
     addDateTime(value['DateTime'], ufo)
     lt.addLast(value['ufos'], ufo)
@@ -216,7 +216,8 @@ def getCitySightings(analyzer, city):
         lst = om.valueSet(data['DateTime'])
         ufos = lt.newList('ARRAY_LIST')
         for it in lt.iterator(lst):
-            lt.addLast(ufos, lst)
+            for ufo in lt.iterator(it):
+                lt.addLast(ufos, ufo)
         return True, N_cities, data['count'], ufos
     else:
         return False, N_cities
@@ -339,13 +340,13 @@ def cmpOnlyDates(datetime1, datetime2):
         return -1
 
 
-def cmpTimes(datetime1, datetime2):
+def cmpTimes(time1, time2):
     """
     Esta función compara dos llaves de fechas.
     """
-    if datetime1.time() == datetime2.time():
+    if time1 == time2:
         return 0
-    elif datetime1.time() > datetime2.time():
+    elif time1 > time2:
         return 1
     else:
         return -1
