@@ -198,6 +198,25 @@ def addLongitude(analyzer, ufo):
 
 # Funciones de consulta
 
+def getCitySightings(analyzer, city):
+    """
+    Retorna el número total de ciudades con avistamientos, el total de
+    avistamientos en city y los avistamientos en city 
+    ordenados cronológicamente
+    """
+    cityIndex = analyzer['cityIndex']
+    N_cities = lt.size(mp.keySet(cityIndex))
+    pair = mp.get(cityIndex, city)
+    if pair is not None:
+        data = me.getValue(pair)
+        lst = om.valueSet(data['DateTime'])
+        ufos = lt.newList('ARRAY_LIST')
+        for it in lt.iterator(lst):
+            lt.addLast(ufos, lst)
+        return True, N_cities, data['count'], ufos
+    else:
+        return False, N_cities
+
 
 def getDuration(analyzer, min_key, max_key):
     """
@@ -217,6 +236,11 @@ def getDuration(analyzer, min_key, max_key):
 
     return arrayList, size
 
+
+def getSightingsByDaytime(analyzer, minHM, maxHM):
+    timeIndex = analyzer['timeIndex']
+    values = om.values(timeIndex, minHM, maxHM)
+    
 
 # Funciones de comparación
 
