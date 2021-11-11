@@ -294,39 +294,14 @@ def getSightingsByCoordinates(analyzer, minLon, maxLon, minLat, maxLat):
     values = om.values(lonIndex, minLon, maxLon)
     ufos = lt.newList('ARRAY_LIST')
 
-    for lst in lt.iterator(values):
-        pos_min = LatitudeBinarySearch(lst, minLat)
-        pos_max = LatitudeBinarySearch(lst, maxLat)
-        n = pos_max - pos_max
-        sublst = lt.subList(lst, pos_min, n)
-        for ufo in lt.iterator(sublst):
-            lt.addLast(ufos, ufo)
+    for latMap in lt.iterator(values):
+        values2 = om.values(latMap, minLat, maxLat)
+        for lst in lt.iterator(values2):
+            for ufo in lt.iterator(lst):
+                lt.addLast(ufos, ufo)
 
     return ufos
 
-
-# Funciones auxiliares
-
-
-def LatitudeBinarySearch(lst, element):
-    """
-    Retorna la posición de un elemento en una lista organizada.
-    """
-    low = 0
-    high = lt.size(lst) - 1
-    mid = 0
-
-    while low <= high:
-        mid = (high + low) // 2
-        cmp = lt.getElement(lst, mid)
-        if int(cmp['latitude']) < element:
-            low = mid + 1
-        elif int(cmp['latitude']) > element:
-            high = mid - 1
-        else:
-            return mid
-
-    return mid
 
 
 # Funciones de comparación

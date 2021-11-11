@@ -43,25 +43,34 @@ operación solicitada...
 # Funciones de impresión
 
 
-def printUFO(ufo):
-    print('Fecha y hora: ' + ufo['datetime'] +
-          '. Ciudad: ' + ufo['city'] +
-          '. País: ' + ufo['country'] +
-          '. Duración (segundos): ' + ufo['duration (seconds)'] +
-          '. Forma del objeto: ' + ufo['shape'])
+def printUFO(ufo, printCoords = False):
+    if printCoords:
+        print('Fecha y hora: ' + ufo['datetime'] +
+              '. Ciudad: ' + ufo['city'] +
+              '. País: ' + ufo['country'] +
+              '. Duración (segundos): ' + ufo['duration (seconds)'] +
+              '. Forma del objeto: ' + ufo['shape'] +
+              '. Latitud: ' + ufo['latitude'] +
+              '. Longitud: ' + ufo['longitude'])
+    else:
+        print('Fecha y hora: ' + ufo['datetime'] +
+              '. Ciudad: ' + ufo['city'] +
+              '. País: ' + ufo['country'] +
+              '. Duración (segundos): ' + ufo['duration (seconds)'] +
+              '. Forma del objeto: ' + ufo['shape'])
 
 
-def printFirstAndLast(lst):
+def printFirstAndLast(lst, printCoords = False, n=3):
     i = 1
-    while i <= 3:
+    while i <= n:
         ufo = lt.getElement(lst, i)
-        printUFO(ufo)
+        printUFO(ufo, printCoords)
         i += 1
 
-    i = -2
+    i = -n+1
     while i <= 0:
         ufo = lt.getElement(lst, i)
-        printUFO(ufo)
+        printUFO(ufo, printCoords)
         i += 1
 
 
@@ -147,22 +156,38 @@ while True:
         result = controller.getSightingsByTime(analyzer, minTime, maxTime)
         print('La hora más tardía en la que se han registrado avistamientos es:')
         print(result[0], 'con ' + str(result[1]) + ' avistamientos.')
+        print('Se encontraron un total de ' + str(lt.size(result[2])) + 
+              'avistamientos entre ', minTime, ' y ', maxTime, '.')
+        print('Los primeros y últimos tres avistamientos en este rango son:')
+        printFirstAndLast(result[2])
         printFirstAndLast(result[2])
 
     elif inputs == 6:
-        minDate = str(input('\nIngrese el límite inferior (AAAA-MM-DD): '))
-        maxDate = str(input('\nIngrese el límite superior (AAAA-MM-DD): '))
-        minDate + ' 00:00'
-        maxDate + ' 23:59'
-        minDate = datetime.fromisoformat(minDate)
-        maxDate = datetime.fromisoformat(maxDate)
+        str_minDate = str(input('\nIngrese el límite inferior (AAAA-MM-DD): '))
+        str_maxDate = str(input('\nIngrese el límite superior (AAAA-MM-DD): '))
+        str_minDate + ' 00:00'
+        str_maxDate + ' 23:59'
+        minDate = datetime.fromisoformat(str_minDate)
+        maxDate = datetime.fromisoformat(str_maxDate)
         result = controller.getSightingsByDate(analyzer, minDate, maxDate)
         print('La fecha más antigua en la que se han registrado avistamientos es:')
         print(result[0], 'con ' + str(result[1]) + ' avistamientos.')
+        print('Se encontraron un total de ' + str(lt.size(result[2])) + 
+              'avistamientos entre ' + str_minDate + ' y ' + str_maxDate + '.')
+        print('Los primeros y últimos tres avistamientos en este rango son:')
         printFirstAndLast(result[2])
 
     elif inputs == 7:
-        pass
+        minLon = float(input('\nIngrese el límite mínimo de longtitud: '))
+        maxLon = float(input('\nIngrese el límite máximo de longtitud: '))
+        minLat = float(input('\nIngrese el límite mínimo de latitud: '))
+        maxLat = float(input('\nIngrese el límite máximo de latitud: '))
+        result = controller.getSightingsByCoordinates(analyzer, minLon, 
+                                                      maxLon, minLat, maxLat)
+        print('Se registraron ' + str(lt.size(result)) + 
+              ' avistamientos en esta región.')
+        print('Los primeros y últimos cinco avistamientos en la región son:')
+        printFirstAndLast(result, printCoords=True, n=5)
 
     else:
         sys.exit(0)
