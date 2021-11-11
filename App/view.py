@@ -127,8 +127,8 @@ while True:
         if found:
             N_sighthings = result[2]
             ufos = result[3]
-            print('Se han reportado ' + str(N_sighthings) + ' avistamientos en ' +
-                  city + '.')
+            print('Se han reportado ' + str(N_sighthings) +
+                  ' avistamientos en ' + city + '.')
             printFirstAndLast(ufos)
         else:
             print('No se encontró la ciudad ' + city + '.')
@@ -145,7 +145,7 @@ while True:
         minTime = time.fromisoformat(minTime)
         maxTime = time.fromisoformat(maxTime)
         result = controller.getSightingsByTime(analyzer, minTime, maxTime)
-        print('La hora más tardía en la que se han registrado avistamientos es:')
+        print('La hora más tardía en la que se registró un avistamiento es:')
         print(result[0], 'con ' + str(result[1]) + ' avistamientos.')
         printFirstAndLast(result[2])
 
@@ -157,7 +157,7 @@ while True:
         minDate = datetime.fromisoformat(minDate)
         maxDate = datetime.fromisoformat(maxDate)
         result = controller.getSightingsByDate(analyzer, minDate, maxDate)
-        print('La fecha más antigua en la que se han registrado avistamientos es:')
+        print('La fecha más antigua en la que se registró un avistamiento es:')
         print(result[0], 'con ' + str(result[1]) + ' avistamientos.')
         printFirstAndLast(result[2])
 
