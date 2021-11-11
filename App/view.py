@@ -43,7 +43,7 @@ operación solicitada...
 # Funciones de impresión
 
 
-def printUFO(ufo, printCoords = False):
+def printUFO(ufo, printCoords=False):
     if printCoords:
         print('Fecha y hora: ' + ufo['datetime'] +
               '. Ciudad: ' + ufo['city'] +
@@ -60,7 +60,7 @@ def printUFO(ufo, printCoords = False):
               '. Forma del objeto: ' + ufo['shape'])
 
 
-def printFirstAndLast(lst, printCoords = False, n=3):
+def printFirstAndLast(lst, printCoords=False, n=3):
     i = 1
     while i <= n:
         ufo = lt.getElement(lst, i)
@@ -156,7 +156,7 @@ while True:
         result = controller.getSightingsByTime(analyzer, minTime, maxTime)
         print('La hora más tardía en la que se registró un avistamiento es:')
         print(result[0], 'con ' + str(result[1]) + ' avistamientos.')
-        print('Se encontraron un total de ' + str(lt.size(result[2])) + 
+        print('Se encontraron un total de ' + str(lt.size(result[2])) +
               'avistamientos entre ', minTime, ' y ', maxTime, '.')
         print('Los primeros y últimos tres avistamientos en este rango son:')
         printFirstAndLast(result[2])
@@ -172,7 +172,7 @@ while True:
         result = controller.getSightingsByDate(analyzer, minDate, maxDate)
         print('La fecha más antigua en la que se registró un avistamiento es:')
         print(result[0], 'con ' + str(result[1]) + ' avistamientos.')
-        print('Se encontraron un total de ' + str(lt.size(result[2])) + 
+        print('Se encontraron un total de ' + str(lt.size(result[2])) +
               'avistamientos entre ' + str_minDate + ' y ' + str_maxDate + '.')
         print('Los primeros y últimos tres avistamientos en este rango son:')
         printFirstAndLast(result[2])
@@ -182,9 +182,9 @@ while True:
         maxLon = float(input('\nIngrese el límite máximo de longtitud: '))
         minLat = float(input('\nIngrese el límite mínimo de latitud: '))
         maxLat = float(input('\nIngrese el límite máximo de latitud: '))
-        result = controller.getSightingsByCoordinates(analyzer, minLon, 
+        result = controller.getSightingsByCoordinates(analyzer, minLon,
                                                       maxLon, minLat, maxLat)
-        print('Se registraron ' + str(lt.size(result)) + 
+        print('Se registraron ' + str(lt.size(result)) +
               ' avistamientos en esta región.')
         print('Los primeros y últimos cinco avistamientos en la región son:')
         printFirstAndLast(result, printCoords=True, n=5)

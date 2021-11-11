@@ -198,9 +198,10 @@ def addLongitude(analyzer, ufo):
     latitudeMap = me.getValue(entry)
     addLatitude(latitudeMap, ufo)
 
-def addLatitude (map, ufo):
+
+def addLatitude(map, ufo):
     latitude = ufo['latitude']
-    latitude = round(float(latitude),2)
+    latitude = round(float(latitude), 2)
     ispresent = om.contains(map, latitude)
 
     if ispresent:
@@ -284,7 +285,7 @@ def getSightingsByDate(analyzer, minDate, maxDate):
     ufos = lt.newList('ARRAY_LIST')
     for lst in lt.iterator(values):
         for ufo in lt.iterator(lst):
-            lt.addLast(ufos,ufo)
+            lt.addLast(ufos, ufo)
 
     return oldDate.date(), N_oldDate, ufos
 
@@ -301,7 +302,6 @@ def getSightingsByCoordinates(analyzer, minLon, maxLon, minLat, maxLat):
                 lt.addLast(ufos, ufo)
 
     return ufos
-
 
 
 # Funciones de comparación
@@ -364,6 +364,7 @@ def compareDates(ufo1, ufo2):
     return date1 < date2
 
 # Funciones de ordenamiento
+
 
 def sortDates(lst):
     mg.sort(lst, compareDates)
