@@ -70,7 +70,7 @@ def newAnalyzer():
                                       comparefunction=cmpDates)
 
     analyzer['longitudeIndex'] = om.newMap(omaptype='RBT',
-                                           comparefunction=cmpLongitudes)
+                                           comparefunction=cmpCoordinates)
 
     return analyzer
 
@@ -191,13 +191,27 @@ def addLongitude(analyzer, ufo):
     if ispresent:
         pass
     else:
-        sightings = lt.newList('ARRAY_LIST')
-        om.put(longitudeIndex, longitude, sightings)
+        latitudeMap = om.newMap(omaptype='RBT', )
+        om.put(longitudeIndex, longitude, latitudeMap)
 
     entry = om.get(longitudeIndex, longitude)
-    arrayList = me.getValue(entry)
-    lt.addLast(arrayList, ufo)
-    sortLatitude(arrayList)
+    latitudeMap = me.getValue(entry)
+    addLatitude(latitudeMap, ufo)
+
+def addLatitude (map, ufo):
+    latitude = ufo['latitude']
+    latitude = round(float(latitude),2)
+    ispresent = om.contains(map, latitude)
+
+    if ispresent:
+        pass
+    else:
+        sightings = lt.newList('ARRAY_LIST')
+        om.put(map, latitude, sightings)
+
+    entry = om.get(map, latitude)
+    lst = me.getValue(entry)
+    lt.addLast(lst, ufo)
 
 
 # Funciones de consulta
@@ -263,16 +277,16 @@ def getSightingsByDate(analyzer, minDate, maxDate):
     dateIndex = analyzer['dateIndex']
     oldDate = om.minKey(dateIndex)
     entry = om.get(dateIndex, oldDate)
-    oldDate = me.getValue(entry)
-    N_oldDate = lt.size(oldDate)
+    ufos = me.getValue(entry)
+    N_oldDate = lt.size(ufos)
 
     values = om.values(dateIndex, minDate, maxDate)
     ufos = lt.newList('ARRAY_LIST')
     for lst in lt.iterator(values):
         for ufo in lt.iterator(lst):
-            lt.addLast(ufo)
+            lt.addLast(ufos,ufo)
 
-    return oldDate, N_oldDate, ufos
+    return oldDate.date(), N_oldDate, ufos
 
 
 def getSightingsByCoordinates(analyzer, minLon, maxLon, minLat, maxLat):
@@ -354,26 +368,16 @@ def cmpDurations(duration1, duration2):
         return -1
 
 
-def cmpLongitudes(longitude1, longitude2):
+def cmpCoordinates(coord1, coord2):
     """
     Esta función compara dos llaves de longitudes.
     """
-    if longitude1 == longitude2:
+    if coord1 == coord2:
         return 0
-    elif longitude1 > longitude2:
+    elif coord1 < coord2:
         return 1
     else:
         return -1
-
-
-def cmpLatitudes(ufo1, ufo2):
-    """
-    Esta función compara dos latitudes para ordenarlas.
-    """
-    latitude1 = round(float(ufo1['latitude']), 2)
-    latitude2 = round(float(ufo2['latitude']), 2)
-
-    return latitude1 > latitude2
 
 
 def compareDates(ufo1, ufo2):
@@ -385,11 +389,6 @@ def compareDates(ufo1, ufo2):
     return date1 < date2
 
 # Funciones de ordenamiento
-
-
-def sortLatitude(arrayList):
-    mg.sort(arrayList, cmpLatitudes)
-
 
 def sortDates(lst):
     mg.sort(lst, compareDates)

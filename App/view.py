@@ -28,6 +28,7 @@ from DISClib.ADT import list as lt
 import sys
 import controller
 from datetime import time
+from datetime import datetime
 assert cf
 
 
@@ -149,7 +150,16 @@ while True:
         printFirstAndLast(result[2])
 
     elif inputs == 6:
-        pass
+        minDate = str(input('\nIngrese el límite inferior (AAAA-MM-DD): '))
+        maxDate = str(input('\nIngrese el límite superior (AAAA-MM-DD): '))
+        minDate + ' 00:00'
+        maxDate + ' 23:59'
+        minDate = datetime.fromisoformat(minDate)
+        maxDate = datetime.fromisoformat(maxDate)
+        result = controller.getSightingsByDate(analyzer, minDate, maxDate)
+        print('La fecha más antigua en la que se han registrado avistamientos es:')
+        print(result[0], 'con ' + str(result[1]) + ' avistamientos.')
+        printFirstAndLast(result[2])
 
     elif inputs == 7:
         pass
